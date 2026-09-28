@@ -1,0 +1,6 @@
+{
+  "name": "Optum — Preventive Screening Journey",
+  "description": "An Optum preventive healthcare screening prototype for provider comparison, transparent cost verification, and appointment completion.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,14 +1,26 @@
 export type ScreenId =
-  | 'recommendation_card'
+  // 11 Core Updated Screens
+  | 'recommendation_card' // CM 01 - 1.0.0 [Recommendation Card]
+  | 'recommendation_ai_analysis' // CM 01 - 1.1.0 [Recommendation AI Analysis]
+  | 'provider_options' // CM 02 - 1.0.0 [Provider Options]
+  | 'cost_coverage' // CM 02 - 1.1.0 [Cost & Coverage Detail]
+  | 'ai_decision_support' // CM 02 - 1.2.0 [AI Decision Support]
+  | 'choose_appointment' // CM 03 - 1.0.0 [Choose Appointment]
+  | 'review_appointment' // CM 03 - 1.1.0 [Review Appointment]
+  | 'appointment_confirmed' // CM 03 - 1.2.0 [Appointment Confirmed]
+  | 'results_ready' // CM 04 - 1.0.0 [Results Ready]
+  | 'report_overview' // CM 04 - 1.1.0 [Report Overview]
+  | 'ai_assisted_interpretation' // CM 04 - 1.2.0 [AI Assisted Interpretation]
+  // 5 Edge Case Screens
+  | 'ec_insufficient_info' // EC - 1.0.0 Insufficient Info
+  | 'ec_coverage_pending' // EC - 1.1.0 [Coverage Pending]
+  | 'ec_provider_unavailable' // EC - 1.2.0 [Provider Unavailable]
+  | 'ec_slot_unavailable' // EC - 1.3.0 [Slot Unavailable]
+  | 'ec_results_not_ready' // EC - 1.4.0 [Results Not Ready]
+  // Aliases for compatibility
   | 'why_recommended'
   | 'about_recommendation'
-  | 'provider_options'
   | 'compare_options'
-  | 'cost_coverage'
-  | 'choose_appointment'
-  | 'review_appointment'
-  | 'appointment_confirmed'
-  | 'results_ready'
   | 'result_summary'
   | 'what_happens_next';
 

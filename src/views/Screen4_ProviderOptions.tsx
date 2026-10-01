@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Building2, ShieldCheck, ArrowRight, SlidersHorizontal } from 'lucide-react';
+import { Sparkles, Check, Star, ShieldCheck, MapPin, Calendar, Clock } from 'lucide-react';
 import { HeaderBar } from '../components/common/HeaderBar';
-import { CoverageBadge } from '../components/common/CoverageBadge';
-import { PriceCallout } from '../components/common/PriceCallout';
 import { Modal } from '../components/common/Modal';
 import { Provider } from '../types';
 
@@ -10,6 +8,8 @@ interface Screen4Props {
   providers: Provider[];
   onSelectProvider: (provider: Provider) => void;
   onCompareProviders: () => void;
+  onSelectPendingCoverage?: (provider: Provider) => void;
+  onSelectUnavailableProvider?: (provider: Provider) => void;
   onBack?: () => void;
 }
 
@@ -17,242 +17,411 @@ export const Screen4_ProviderOptions: React.FC<Screen4Props> = ({
   providers,
   onSelectProvider,
   onCompareProviders,
+  onSelectPendingCoverage,
+  onSelectUnavailableProvider,
   onBack,
 }) => {
-  const [activeFilter, setActiveFilter] = useState<'soonest' | 'distance' | 'coverage'>('soonest');
-  const [comparisonModalOpen, setComparisonModalOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<'recommended' | 'earliest' | 'coverage' | 'distance'>('recommended');
+  const [detailsModalProvider, setDetailsModalProvider] = useState<Provider | null>(null);
 
-  // Sorting based on active filter
-  const sortedProviders = [...providers].sort((a, b) => {
-    if (activeFilter === 'soonest') {
-      if (a.nextAvailable.includes('Today')) return -1;
-      if (b.nextAvailable.includes('Today')) return 1;
-      return 0;
-    }
-    if (activeFilter === 'distance') {
-      const distA = parseFloat(a.distance);
-      const distB = parseFloat(b.distance);
-      return distA - distB;
-    }
-    if (activeFilter === 'coverage') {
-      const rank = { verified: 1, estimated: 2, not_verified: 3 };
-      return rank[a.coverageStatus] - rank[b.coverageStatus];
-    }
-    return 0;
-  });
+  // Clinic thumbnail image placeholders matching Figma aesthetics
+  const clinicImages: Record<string, string> = {
+    'hf-diag': 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=160&q=80',
+    'cc-labs': 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=160&q=80',
+    'wp-diag': 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=160&q=80',
+  };
 
   return (
     <div className="flex flex-col min-h-full pb-8">
       <HeaderBar
-        title="Screening Options"
-        subtitle="Preventive health screening"
+        title="Your Screening Options"
+        subtitle="Based on your health profile"
         showBack={Boolean(onBack)}
         onBack={onBack}
       />
 
       <div className="p-4 sm:p-5 space-y-4">
-        {/* Intro text */}
-        <p className="text-sm text-slate-700 leading-snug">
-          Compare providers by availability, distance and expected cost.
-        </p>
+        {/* Top Card: AI Recommendation Banner */}
+        <div className="bg-white rounded-3xl p-5 border border-blue-200/70 shadow-xs space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-full bg-[#6D28D9] flex items-center justify-center text-white shrink-0">
+              <Sparkles className="w-3.5 h-3.5 fill-white" />
+            </div>
+            <span className="text-xs font-semibold text-[#1B64F2]">
+              AI recommendation
+            </span>
+          </div>
 
-        {/* Filter Pills & Help Link */}
-        <div className="bg-slate-50/80 rounded-2xl p-3 border border-slate-200/80 space-y-2.5">
-          <div className="flex items-center gap-2 flex-wrap">
+          <h2 className="text-lg font-bold text-slate-900 leading-tight">
+            Preventive health screening
+          </h2>
+
+          <div className="space-y-1.5 text-xs text-slate-600">
+            <div className="flex items-center gap-2">
+              <Check className="w-4 h-4 text-[#1B64F2] stroke-[2.5] shrink-0" />
+              <span>Matches your health profile</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="w-4 h-4 text-[#1B64F2] stroke-[2.5] shrink-0" />
+              <span>Due based on your screening history</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="w-4 h-4 text-[#1B64F2] stroke-[2.5] shrink-0" />
+              <span>Covered through your preventive care benefits</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Section Heading & Filter Pills */}
+        <div className="space-y-2.5 pt-1">
+          <div>
+            <h3 className="text-base font-bold text-slate-900 leading-tight">
+              Recommended options
+            </h3>
+            <p className="text-xs text-slate-500">
+              3 providers matched your screening needs
+            </p>
+          </div>
+
+          {/* Filter Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
             <button
               type="button"
-              onClick={() => setActiveFilter('soonest')}
-              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                activeFilter === 'soonest'
-                  ? 'bg-[#EBF8F2] text-[#0F7645] border border-[#86EFAC] shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+              onClick={() => setActiveFilter('recommended')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                activeFilter === 'recommended'
+                  ? 'bg-[#1B64F2] text-white shadow-xs'
+                  : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
               }`}
             >
-              Soonest available
+              Recommended for you
             </button>
 
             <button
               type="button"
-              onClick={() => setActiveFilter('distance')}
-              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                activeFilter === 'distance'
-                  ? 'bg-[#EBF8F2] text-[#0F7645] border border-[#86EFAC] shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+              onClick={() => setActiveFilter('earliest')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                activeFilter === 'earliest'
+                  ? 'bg-[#1B64F2] text-white shadow-xs'
+                  : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
               }`}
             >
-              Distance
+              Earliest appointment
             </button>
 
             <button
               type="button"
               onClick={() => setActiveFilter('coverage')}
-              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 activeFilter === 'coverage'
-                  ? 'bg-[#EBF8F2] text-[#0F7645] border border-[#86EFAC] shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                  ? 'bg-[#1B64F2] text-white shadow-xs'
+                  : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
               }`}
             >
               Coverage
             </button>
-          </div>
-
-          <div className="flex items-center justify-between pt-1">
-            <button
-              type="button"
-              onClick={() => setComparisonModalOpen(true)}
-              className="text-xs font-semibold text-[#1B64F2] hover:underline cursor-pointer"
-            >
-              How comparison works
-            </button>
 
             <button
               type="button"
-              onClick={onCompareProviders}
-              className="text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:border-slate-400 px-2.5 py-1 rounded-lg flex items-center gap-1 cursor-pointer"
+              onClick={() => setActiveFilter('distance')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                activeFilter === 'distance'
+                  ? 'bg-[#1B64F2] text-white shadow-xs'
+                  : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+              }`}
             >
-              <SlidersHorizontal className="w-3 h-3 text-[#1B64F2]" />
-              Compare side-by-side
+              Distance
             </button>
           </div>
         </div>
 
-        {/* Provider Cards */}
-        <div className="space-y-4">
-          {sortedProviders.map((prov) => (
-            <div
-              key={prov.id}
-              className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-4 hover:border-blue-200 transition-all"
-            >
-              {/* Provider Header */}
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center shrink-0">
-                  <Building2 className="w-5 h-5" />
-                </div>
-                <div className="space-y-1.5 flex-1 min-w-0">
-                  <h3 className="text-base font-bold text-slate-900 leading-tight">
-                    {prov.name}
-                  </h3>
-                  <div>
-                    <CoverageBadge
-                      status={prov.coverageStatus}
-                      customLabel={prov.coverageLabel}
-                      size="sm"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Price Callout */}
-              <PriceCallout
-                price={prov.costDisplay}
-                subtitle={prov.costSubtitle}
-              />
-
-              {/* Spec Rows */}
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center py-0.5">
-                  <span className="text-slate-500">Coverage</span>
-                  <span className="font-semibold text-slate-800 capitalize">
-                    {prov.coverageStatus === 'verified'
-                      ? 'Verified'
-                      : prov.coverageStatus === 'estimated'
-                      ? 'Estimated'
-                      : 'Not verified'}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-0.5">
-                  <span className="text-slate-500">Distance</span>
-                  <span className="font-semibold text-slate-800">
-                    {prov.distance}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-0.5">
-                  <span className="text-slate-500">Next available</span>
-                  <div className="flex items-center gap-1.5">
-                    {prov.earliestSlotTag && (
-                      <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded-sm">
-                        {prov.earliestSlotTag}
-                      </span>
-                    )}
-                    <span className="font-semibold text-slate-800">
-                      {prov.nextAvailable}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* View Details Button */}
-              <button
-                type="button"
-                onClick={() => onSelectProvider(prov)}
-                className="w-full h-11 rounded-2xl bg-[#1B64F2] hover:bg-[#1554D1] active:scale-[0.98] text-white font-semibold text-sm shadow-xs transition-all flex items-center justify-center cursor-pointer"
-              >
-                View details
-              </button>
-
-              {/* Accreditation footer */}
-              <div className="flex items-center justify-center gap-1 text-[11px] text-slate-400 pt-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
-                <span>{prov.accreditation}</span>
-              </div>
+        {/* Provider 1: HealthFirst Diagnostics */}
+        <div className="bg-white rounded-3xl p-5 border border-blue-200 shadow-xs space-y-4">
+          <div className="flex items-start gap-3">
+            <img
+              src={clinicImages['hf-diag']}
+              alt="HealthFirst Diagnostics"
+              className="w-12 h-12 rounded-xl object-cover border border-slate-100 shrink-0"
+            />
+            <div className="space-y-1">
+              <h4 className="text-base font-bold text-slate-900 leading-tight">
+                HealthFirst Diagnostics
+              </h4>
+              <p className="text-xs text-slate-500">
+                Preventive Screening Center
+              </p>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                ✓ Recommended match
+              </span>
             </div>
-          ))}
+          </div>
+
+          {/* Key Attributes */}
+          <div className="grid grid-cols-2 gap-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
+            <span className="text-slate-400">Coverage</span>
+            <span className="font-semibold text-[#1B64F2] text-right">✓ Verified</span>
+
+            <span className="text-slate-400">Next available</span>
+            <span className="font-semibold text-slate-900 text-right">Tomorrow · 8:30 AM</span>
+
+            <span className="text-slate-400">Distance</span>
+            <span className="font-medium text-slate-600 text-right">2.4 km away</span>
+          </div>
+
+          {/* Out of pocket box */}
+          <div className="bg-[#F0F6FF] rounded-2xl p-4 space-y-1">
+            <span className="text-[11px] text-slate-500 block">
+              Estimated out-of-pocket
+            </span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl font-black text-slate-900 tracking-tight">
+                ₹0
+              </span>
+              <span className="text-xs text-slate-500">
+                after verified coverage
+              </span>
+            </div>
+          </div>
+
+          {/* Match reasons */}
+          <div className="space-y-1 text-xs text-slate-700">
+            <div className="flex items-center gap-2">
+              <Check className="w-3.5 h-3.5 text-[#1B64F2] stroke-[2.5]" />
+              <span>Verified coverage — covered by your plan</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="w-3.5 h-3.5 text-[#1B64F2] stroke-[2.5]" />
+              <span>Recommended based on your location</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="w-3.5 h-3.5 text-[#1B64F2] stroke-[2.5]" />
+              <span>Earliest appointment available</span>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="space-y-2 pt-1">
+            <button
+              type="button"
+              onClick={() => onSelectProvider(providers[0])}
+              className="w-full py-3 rounded-2xl bg-[#1B64F2] hover:bg-[#1554D1] text-white font-semibold text-sm shadow-xs transition-all cursor-pointer text-center"
+            >
+              Choose this provider
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setDetailsModalProvider(providers[0])}
+              className="w-full text-center text-xs font-semibold text-[#1B64F2] hover:underline py-1.5 cursor-pointer"
+            >
+              View details
+            </button>
+          </div>
         </div>
 
-        {/* Side-by-side Compare Banner */}
-        <div className="bg-[#002D4A] rounded-2xl p-4 text-white flex items-center justify-between gap-3 shadow-xs">
-          <div>
-            <span className="text-xs font-bold text-emerald-400 block">
-              Direct Comparison
-            </span>
-            <p className="text-xs text-slate-200 mt-0.5">
-              Unsure between HealthFirst &amp; CityCare?
-            </p>
+        {/* Provider 2: CityCare Labs */}
+        <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-4">
+          <div className="flex items-start gap-3">
+            <img
+              src={clinicImages['cc-labs']}
+              alt="CityCare Labs"
+              className="w-12 h-12 rounded-xl object-cover border border-slate-100 shrink-0"
+            />
+            <div className="space-y-1">
+              <h4 className="text-base font-bold text-slate-900 leading-tight">
+                CityCare Labs
+              </h4>
+              <p className="text-xs text-slate-500">
+                Preventive Screening Center
+              </p>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                Coverage needs confirmation
+              </span>
+            </div>
           </div>
+
+          {/* Key Attributes */}
+          <div className="grid grid-cols-2 gap-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
+            <span className="text-slate-400">Coverage</span>
+            <span className="font-semibold text-amber-700 text-right">Estimated</span>
+
+            <span className="text-slate-400">Next available</span>
+            <span className="font-semibold text-slate-900 text-right">Today · 5:05 PM</span>
+
+            <span className="text-slate-400">Distance</span>
+            <span className="font-medium text-slate-600 text-right">4.1 km away</span>
+          </div>
+
+          {/* Out of pocket box */}
+          <div className="bg-[#F8FAFC] rounded-2xl p-4 space-y-2">
+            <span className="text-[11px] text-slate-500 block">
+              Estimated out-of-pocket
+            </span>
+            <div>
+              <span className="text-2xl font-black text-slate-900 tracking-tight block">
+                ₹600–₹900
+              </span>
+              <span className="text-xs text-slate-500 block mt-0.5">
+                Estimated after coverage confirmation
+              </span>
+            </div>
+            <div className="bg-amber-50 border border-amber-200 rounded-xl px-2.5 py-1 text-[11px] text-amber-800 font-medium">
+              We can verify your benefits before booking
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="space-y-2 pt-1">
+            <button
+              type="button"
+              onClick={() => {
+                if (onSelectPendingCoverage) {
+                  onSelectPendingCoverage(providers[1]);
+                } else {
+                  onSelectProvider(providers[1]);
+                }
+              }}
+              className="w-full py-3 rounded-2xl bg-[#1B64F2] hover:bg-[#1554D1] text-white font-semibold text-sm shadow-xs transition-all cursor-pointer text-center"
+            >
+              Choose this provider
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setDetailsModalProvider(providers[1])}
+              className="w-full text-center text-xs font-semibold text-[#1B64F2] hover:underline py-1.5 cursor-pointer"
+            >
+              View details
+            </button>
+          </div>
+        </div>
+
+        {/* Provider 3: WellPath Diagnostics */}
+        <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-4">
+          <div className="flex items-start gap-3">
+            <img
+              src={clinicImages['wp-diag']}
+              alt="WellPath Diagnostics"
+              className="w-12 h-12 rounded-xl object-cover border border-slate-100 shrink-0"
+            />
+            <div className="space-y-1">
+              <h4 className="text-base font-bold text-slate-900 leading-tight">
+                WellPath Diagnostics
+              </h4>
+              <p className="text-xs text-slate-500">
+                Preventive Screening Center
+              </p>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600">
+                Coverage not verified
+              </span>
+            </div>
+          </div>
+
+          {/* Key Attributes */}
+          <div className="grid grid-cols-2 gap-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
+            <span className="text-slate-400">Coverage</span>
+            <span className="font-semibold text-slate-600 text-right">Not verified</span>
+
+            <span className="text-slate-400">Next available</span>
+            <span className="font-semibold text-slate-900 text-right">Tomorrow · 7:30 AM</span>
+
+            <span className="text-slate-400">Distance</span>
+            <span className="font-medium text-slate-600 text-right">1.8 km away</span>
+          </div>
+
+          {/* Out of pocket box */}
+          <div className="bg-[#F8FAFC] rounded-2xl p-4 space-y-1">
+            <span className="text-[11px] text-slate-500 block">
+              Estimated out-of-pocket
+            </span>
+            <span className="text-2xl font-black text-slate-900 tracking-tight block">
+              Up to ₹2,100
+            </span>
+            <span className="text-xs text-slate-500 block">
+              Coverage needs confirmation
+            </span>
+          </div>
+
+          {/* Action buttons */}
+          <div className="space-y-2 pt-1">
+            <button
+              type="button"
+              onClick={() => {
+                if (onSelectUnavailableProvider) {
+                  onSelectUnavailableProvider(providers[2]);
+                } else {
+                  onSelectProvider(providers[2]);
+                }
+              }}
+              className="w-full py-3 rounded-2xl bg-[#1B64F2] hover:bg-[#1554D1] text-white font-semibold text-sm shadow-xs transition-all cursor-pointer text-center"
+            >
+              Choose this provider
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setDetailsModalProvider(providers[2])}
+              className="w-full text-center text-xs font-semibold text-[#1B64F2] hover:underline py-1.5 cursor-pointer"
+            >
+              View details
+            </button>
+          </div>
+        </div>
+
+        {/* Need Help Choosing? Card */}
+        <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-3">
+          <div className="flex items-center gap-2">
+            <Star className="w-4 h-4 text-slate-700" />
+            <h4 className="text-sm font-bold text-slate-900">
+              Need help choosing?
+            </h4>
+          </div>
+
+          <p className="text-xs text-slate-600 leading-relaxed">
+            AI can compare providers based on coverage, appointment availability, and cost
+          </p>
+
           <button
             type="button"
             onClick={onCompareProviders}
-            className="px-3.5 py-2 rounded-xl bg-white text-[#002D4A] font-bold text-xs hover:bg-slate-100 shrink-0 flex items-center gap-1 transition-colors cursor-pointer"
+            className="w-full py-3 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 font-semibold text-xs active:scale-[0.99] transition-all cursor-pointer text-center"
           >
-            Compare <ArrowRight className="w-3.5 h-3.5" />
+            Compare options for me
           </button>
         </div>
       </div>
 
-      {/* Modal: How comparison works */}
-      <Modal
-        isOpen={comparisonModalOpen}
-        onClose={() => setComparisonModalOpen(false)}
-        title="How comparison works"
-        subtitle="Unbiased sorting and verified pricing"
-      >
-        <div className="space-y-3 text-xs text-slate-600">
-          <p>
-            We prioritize clinical quality, proximity, and transparent pricing. No healthcare provider pays for higher positioning on Optum.
-          </p>
-          <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
-            <div>
-              <span className="font-semibold text-slate-900 block">1. Verified Coverage</span>
-              <span className="text-slate-500">Real-time insurance API query to confirm in-network ₹0 eligibility.</span>
+      {/* In-App Provider Details Modal */}
+      {detailsModalProvider && (
+        <Modal
+          isOpen={Boolean(detailsModalProvider)}
+          onClose={() => setDetailsModalProvider(null)}
+          title={detailsModalProvider.name}
+          subtitle={detailsModalProvider.address}
+        >
+          <div className="space-y-3 text-xs text-slate-600">
+            <div className="p-3 bg-slate-50 rounded-xl space-y-1">
+              <span className="font-bold text-slate-900 block">Accreditation</span>
+              <p>{detailsModalProvider.accreditation}</p>
             </div>
-            <div>
-              <span className="font-semibold text-slate-900 block">2. Proximity</span>
-              <span className="text-slate-500">Calculated distance from your registered residence or current location.</span>
+            <div className="p-3 bg-slate-50 rounded-xl space-y-1">
+              <span className="font-bold text-slate-900 block">Diagnostic equipment</span>
+              <p>Automated high-throughput analyzers with daily multi-point calibrator validation.</p>
             </div>
-            <div>
-              <span className="font-semibold text-slate-900 block">3. Slot Freshness</span>
-              <span className="text-slate-500">Live calendar integration updating open lab slots every 15 minutes.</span>
-            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const prov = detailsModalProvider;
+                setDetailsModalProvider(null);
+                onSelectProvider(prov);
+              }}
+              className="w-full py-2.5 rounded-xl bg-[#1B64F2] text-white font-medium text-xs mt-2 cursor-pointer"
+            >
+              Select {detailsModalProvider.shortName}
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => setComparisonModalOpen(false)}
-            className="w-full py-2.5 rounded-xl bg-[#002D4A] text-white font-medium text-xs mt-2"
-          >
-            Got it
-          </button>
-        </div>
-      </Modal>
+        </Modal>
+      )}
     </div>
   );
 };

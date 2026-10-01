@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { Shield, Info, CheckCircle2, CircleDot, UserCheck, Stethoscope } from 'lucide-react';
+import { Sparkles, Check, AlertCircle, FileText, Calendar, MessageSquare, Download } from 'lucide-react';
 import { HeaderBar } from '../components/common/HeaderBar';
-import { CoverageBadge } from '../components/common/CoverageBadge';
-import { ReportGraphic } from '../components/common/VectorIllustration';
 import { Modal } from '../components/common/Modal';
 
 interface Screen11Props {
   onBack: () => void;
-  onViewResults: () => void;
+  onViewResults?: () => void;
   onResetJourney: () => void;
 }
 
@@ -16,210 +14,173 @@ export const Screen11_NextAction: React.FC<Screen11Props> = ({
   onViewResults,
   onResetJourney,
 }) => {
-  const [clinicianModal, setClinicianModal] = useState(false);
-  const [existingDoctorModal, setExistingDoctorModal] = useState(false);
-  const [noHelpModal, setNoHelpModal] = useState(false);
-  const [clinicianBooked, setClinicianBooked] = useState(false);
-  const [doctorShared, setDoctorShared] = useState(false);
+  const [followUpModal, setFollowUpModal] = useState(false);
+  const [messageModal, setMessageModal] = useState(false);
+  const [reportModal, setReportModal] = useState(false);
+  const [followUpBooked, setFollowUpBooked] = useState(false);
+  const [messageSent, setMessageSent] = useState(false);
 
   return (
     <div className="flex flex-col min-h-full pb-8">
       <HeaderBar
-        title="What happens next"
+        title="AI summary of your screening results"
         showBack
         onBack={onBack}
+        rightElement={
+          <div className="w-8 h-8 rounded-full bg-[#6D28D9] flex items-center justify-center text-white shadow-xs">
+            <Sparkles className="w-4 h-4 fill-white" />
+          </div>
+        }
       />
 
       <div className="p-4 sm:p-5 space-y-4">
-        {/* Next-step guidance Alert Box */}
-        <div className="bg-[#FFF8ED] rounded-2xl p-4 border border-[#FDE1AA] space-y-1.5">
-          <div className="flex items-center gap-2 text-amber-800">
-            <Info className="w-4 h-4 stroke-[2.2] shrink-0" />
-            <span className="text-xs font-bold text-amber-900">
-              Next-step guidance
+        {/* Section 1: What was found Card */}
+        <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-3">
+          <h3 className="text-base font-bold text-slate-900 leading-tight">
+            What was found
+          </h3>
+
+          <div className="space-y-2.5">
+            {/* Blood pressure */}
+            <div className="bg-[#F8FAFC] rounded-2xl p-3.5 flex items-center gap-3 border border-slate-100">
+              <div className="w-8 h-8 rounded-full bg-blue-50 text-[#1B64F2] flex items-center justify-center shrink-0">
+                <Check className="w-4 h-4 stroke-[2.5]" />
+              </div>
+              <div className="space-y-0.5">
+                <h4 className="text-xs font-bold text-slate-900 leading-snug">
+                  Blood pressure
+                </h4>
+                <p className="text-[11px] text-slate-500">
+                  Within normal range
+                </p>
+              </div>
+            </div>
+
+            {/* Cholesterol - Elevated */}
+            <div className="bg-[#FFF9EE] rounded-2xl p-3.5 flex items-center gap-3 border border-amber-200/70">
+              <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                <AlertCircle className="w-4 h-4 stroke-[2.5]" />
+              </div>
+              <div className="space-y-0.5">
+                <h4 className="text-xs font-bold text-slate-900 leading-snug">
+                  Cholesterol
+                </h4>
+                <p className="text-[11px] text-amber-900 font-medium">
+                  Slightly elevated — follow-up recommended
+                </p>
+              </div>
+            </div>
+
+            {/* Glucose */}
+            <div className="bg-[#F8FAFC] rounded-2xl p-3.5 flex items-center gap-3 border border-slate-100">
+              <div className="w-8 h-8 rounded-full bg-blue-50 text-[#1B64F2] flex items-center justify-center shrink-0">
+                <Check className="w-4 h-4 stroke-[2.5]" />
+              </div>
+              <div className="space-y-0.5">
+                <h4 className="text-xs font-bold text-slate-900 leading-snug">
+                  Glucose
+                </h4>
+                <p className="text-[11px] text-slate-500">
+                  Optimal
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 2: What it means Card */}
+        <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-4">
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 leading-snug">
+            What it means
+          </h2>
+
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Based on your screening, your blood pressure and glucose are within normal ranges. However, your cholesterol levels are slightly elevated.
+          </p>
+
+          {/* AI Interpretation Box */}
+          <div className="bg-[#F8FAFD] rounded-2xl p-4 border border-blue-100 space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-[#6D28D9] flex items-center justify-center text-white shrink-0">
+                <Sparkles className="w-3.5 h-3.5 fill-white" />
+              </div>
+              <span className="text-xs font-semibold text-[#1B64F2]">
+                AI interpretation
+              </span>
+            </div>
+
+            <p className="text-xs sm:text-sm text-slate-800 font-semibold leading-relaxed">
+              Based on your screening data, most measurements are within expected ranges. One area may need attention.
+            </p>
+
+            <span className="text-[10px] text-slate-400 block pt-1">
+              Supporting interpretation
             </span>
           </div>
-          <p className="text-sm font-semibold text-slate-900 leading-snug">
-            Your screening is complete
-          </p>
-          <p className="text-xs text-amber-900/90 leading-relaxed">
-            Next-step guidance is available with your result.
-          </p>
-        </div>
 
-        {/* Results Available Card */}
-        <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-4">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
-                <Shield className="w-5 h-5 stroke-[2]" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900 leading-tight">
-                  HealthFirst Diagnostics
-                </h3>
-                <span className="text-xs text-slate-400 block mt-0.5">
-                  Completed: 29 September
-                </span>
-              </div>
-            </div>
-            <CoverageBadge status="available" customLabel="Available" size="sm" />
+          {/* Action Buttons */}
+          <div className="space-y-2.5 pt-1">
+            <button
+              type="button"
+              onClick={() => setFollowUpModal(true)}
+              className="w-full py-3.5 rounded-2xl bg-[#1B64F2] hover:bg-[#1554D1] active:scale-[0.99] text-white font-semibold text-sm shadow-xs transition-all cursor-pointer text-center"
+            >
+              Schedule follow-up
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMessageModal(true)}
+              className="w-full py-3.5 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 font-semibold text-sm active:scale-[0.99] transition-all cursor-pointer text-center"
+            >
+              Message your doctor
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setReportModal(true)}
+              className="w-full text-center text-xs font-semibold text-[#1B64F2] hover:underline py-1.5 cursor-pointer block"
+            >
+              Download full report
+            </button>
           </div>
 
-          <ReportGraphic />
-
-          <div>
-            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
-              Results available
-            </h2>
-            <p className="text-xs text-slate-500 mt-1">
-              Preventive health screening
-            </p>
-          </div>
-
-          <div className="space-y-2 pt-2 border-t border-slate-100">
-            <h4 className="text-sm font-bold text-slate-900">
-              Results summary
-            </h4>
-            <div className="flex justify-between items-center text-xs">
-              <span className="text-slate-500">Status</span>
-              <span className="font-bold text-slate-900">Results available</span>
-            </div>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              You can review the report and any next-step guidance provided with it.
-            </p>
-          </div>
-
-          <div className="pt-1 text-xs text-slate-500 italic leading-relaxed">
+          {/* Disclaimer */}
+          <p className="text-[11px] text-slate-400 text-center leading-relaxed pt-1">
             Clinical findings should be interpreted by a qualified clinician.
-          </div>
-
-          {/* Action buttons inside card */}
-          <div className="space-y-2 pt-1">
-            <button
-              type="button"
-              onClick={onViewResults}
-              className="w-full h-12 rounded-2xl bg-[#1B64F2] hover:bg-[#1554D1] active:scale-[0.98] text-white font-semibold text-sm shadow-xs transition-all flex items-center justify-center cursor-pointer"
-            >
-              View results
-            </button>
-
-            <button
-              type="button"
-              onClick={onViewResults}
-              className="w-full h-12 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 active:scale-[0.98] text-slate-700 font-semibold text-sm transition-all flex items-center justify-center cursor-pointer"
-            >
-              Download report
-            </button>
-          </div>
-        </div>
-
-        {/* Primary Care Pathway Buttons */}
-        <div className="space-y-2.5 pt-2">
-          {/* Find a clinician (Primary Teal/Green button) */}
-          <button
-            type="button"
-            onClick={() => setClinicianModal(true)}
-            className="w-full h-13 rounded-2xl bg-[#00695C] hover:bg-[#004D40] active:scale-[0.98] text-white font-semibold text-base shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <Stethoscope className="w-5 h-5" />
-            <span>Find a clinician</span>
-          </button>
-
-          {/* I already have a doctor (Secondary White button) */}
-          <button
-            type="button"
-            onClick={() => setExistingDoctorModal(true)}
-            className="w-full h-12 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 active:scale-[0.98] text-slate-800 font-semibold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <UserCheck className="w-4 h-4 text-slate-600" />
-            <span>I already have a doctor</span>
-          </button>
-
-          {/* I don't need help right now (Text button) */}
-          <button
-            type="button"
-            onClick={() => setNoHelpModal(true)}
-            className="w-full py-2.5 text-center text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
-          >
-            I don&apos;t need help right now
-          </button>
-        </div>
-
-        {/* Your Health Journey Progress Card */}
-        <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-3">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-            Your health journey
-          </span>
-
-          <div className="space-y-3 text-xs">
-            <div className="flex items-center gap-2.5 text-slate-800">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>
-                <strong>Preventive screening:</strong> Completed
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2.5 text-slate-800">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>
-                <strong>Results:</strong> Available
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2.5 text-slate-800">
-              <CircleDot className="w-4 h-4 text-[#1B64F2] shrink-0 animate-pulse" />
-              <span>
-                <strong>Next step:</strong> <span className="text-[#1B64F2] font-semibold">Review available</span>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Journey Completion & Restart Demo */}
-        <div className="p-4 bg-slate-100 rounded-2xl text-center space-y-2">
-          <span className="text-xs text-slate-500 block">
-            You completed the 7-step preventive care prototype!
-          </span>
-          <button
-            type="button"
-            onClick={onResetJourney}
-            className="text-xs font-bold text-[#1B64F2] hover:underline cursor-pointer"
-          >
-            &larr; Restart journey from Screen 1
-          </button>
+          </p>
         </div>
       </div>
 
-      {/* Modal: Find a Clinician */}
+      {/* In-App Modal: Schedule Follow-up */}
       <Modal
-        isOpen={clinicianModal}
+        isOpen={followUpModal}
         onClose={() => {
-          setClinicianModal(false);
-          setClinicianBooked(false);
+          setFollowUpModal(false);
+          setFollowUpBooked(false);
         }}
-        title={clinicianBooked ? "Telehealth Confirmed" : "In-Network Primary Care Clinicians"}
-        subtitle={clinicianBooked ? "Optum Virtual Care Network" : "Telehealth & In-Clinic Consultations"}
+        title={followUpBooked ? "Follow-Up Scheduled" : "Schedule Clinician Follow-Up"}
+        subtitle={followUpBooked ? "Optum Virtual Care Network" : "Cholesterol & Lifestyle Review"}
       >
-        {clinicianBooked ? (
+        {followUpBooked ? (
           <div className="space-y-4 text-xs text-slate-700 py-2">
             <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-2 text-center">
               <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-6 h-6 stroke-[2.5]" />
+                <Check className="w-6 h-6 stroke-[2.5]" />
               </div>
-              <h3 className="font-bold text-slate-900 text-sm">Appointment Booked!</h3>
+              <h3 className="font-bold text-slate-900 text-sm">Consultation Confirmed!</h3>
               <p className="text-slate-600 text-xs">
-                Dr. Ananya Sen, MD will meet you for a 15-minute video review today at <strong>6:30 PM</strong>.
+                Dr. Ananya Sen, MD will review your lipid panel with you via Telehealth on <strong>Friday at 5:00 PM</strong>.
               </p>
-              <div className="text-[11px] text-emerald-800 bg-white/70 py-1.5 px-3 rounded-lg inline-block border border-emerald-200/60 font-semibold">
+              <div className="text-[11px] text-emerald-800 bg-white/80 py-1.5 px-3 rounded-lg inline-block border border-emerald-200 font-semibold">
                 Covered under Optum Preventive Benefits (₹0)
               </div>
             </div>
             <button
               type="button"
               onClick={() => {
-                setClinicianModal(false);
-                setClinicianBooked(false);
+                setFollowUpModal(false);
+                setFollowUpBooked(false);
               }}
               className="w-full py-2.5 rounded-xl bg-[#002D4A] hover:bg-[#00385D] text-white font-medium text-xs transition-colors cursor-pointer"
             >
@@ -229,9 +190,9 @@ export const Screen11_NextAction: React.FC<Screen11Props> = ({
         ) : (
           <div className="space-y-3 text-xs text-slate-600">
             <p>
-              Review your cholesterol &amp; metabolic findings with an accredited family medicine physician covered by your insurance with zero co-pay:
+              Your cholesterol is slightly elevated (214 mg/dL). A 15-minute consultation with an in-network primary care physician can guide nutritional changes:
             </p>
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
               <div className="flex items-center justify-between">
                 <div>
                   <strong className="text-slate-900 block">Dr. Ananya Sen, MD</strong>
@@ -241,45 +202,45 @@ export const Screen11_NextAction: React.FC<Screen11Props> = ({
                   Covered ₹0
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500">Available for 15-min Telehealth review today at 6:30 PM.</p>
+              <p className="text-[11px] text-slate-500">Available Friday · 5:00 PM (Telehealth)</p>
             </div>
             <button
               type="button"
-              onClick={() => setClinicianBooked(true)}
-              className="w-full py-2.5 rounded-xl bg-[#00695C] hover:bg-[#00574B] text-white font-medium text-xs mt-2 cursor-pointer transition-colors"
+              onClick={() => setFollowUpBooked(true)}
+              className="w-full py-2.5 rounded-xl bg-[#1B64F2] hover:bg-[#1554D1] text-white font-semibold text-xs mt-2 cursor-pointer transition-colors"
             >
-              Book Telehealth Review
+              Confirm 15-Min Telehealth Review
             </button>
           </div>
         )}
       </Modal>
 
-      {/* Modal: I already have a doctor */}
+      {/* In-App Modal: Message Your Doctor */}
       <Modal
-        isOpen={existingDoctorModal}
+        isOpen={messageModal}
         onClose={() => {
-          setExistingDoctorModal(false);
-          setDoctorShared(false);
+          setMessageModal(false);
+          setMessageSent(false);
         }}
-        title={doctorShared ? "Report Transmitted" : "Share With Your Personal Doctor"}
-        subtitle={doctorShared ? "Transfer ID: OPTUM-RX-9821" : "One-tap clinical dispatch"}
+        title={messageSent ? "Message Dispatched" : "Message Your Care Team"}
+        subtitle={messageSent ? "Sent to Dr. Sharma" : "Direct clinical messaging"}
       >
-        {doctorShared ? (
+        {messageSent ? (
           <div className="space-y-4 text-xs text-slate-700 py-2">
             <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-2 text-center">
               <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-6 h-6 stroke-[2.5]" />
+                <Check className="w-6 h-6 stroke-[2.5]" />
               </div>
-              <h3 className="font-bold text-slate-900 text-sm">Transmitted Successfully!</h3>
+              <h3 className="font-bold text-slate-900 text-sm">Message Sent Successfully!</h3>
               <p className="text-slate-600 text-xs">
-                Your diagnostic lab report has been dispatched to <strong>dr.sharma@delhiclinic.org</strong> via Optum Clinical Gateway.
+                Your question and verified lab report have been dispatched to your physician. Expect a reply within 24 hours.
               </p>
             </div>
             <button
               type="button"
               onClick={() => {
-                setExistingDoctorModal(false);
-                setDoctorShared(false);
+                setMessageModal(false);
+                setMessageSent(false);
               }}
               className="w-full py-2.5 rounded-xl bg-[#002D4A] hover:bg-[#00385D] text-white font-medium text-xs transition-colors cursor-pointer"
             >
@@ -289,42 +250,60 @@ export const Screen11_NextAction: React.FC<Screen11Props> = ({
         ) : (
           <div className="space-y-3 text-xs text-slate-600">
             <p>
-              Enter your doctor&apos;s email or phone number. We will securely transfer your verified PDF report and biomarker summary directly into their electronic records.
+              Send your screening results and any questions directly to your registered family doctor:
             </p>
-            <input
-              type="text"
-              placeholder="Doctor's name or clinic email"
-              defaultValue="dr.sharma@delhiclinic.org"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs"
+            <textarea
+              rows={3}
+              defaultValue="Hello Doctor, I just received my preventive screening results showing slightly elevated cholesterol. Should we schedule a brief follow-up discussion?"
+              className="w-full p-2.5 border border-slate-300 rounded-xl text-xs bg-slate-50"
             />
             <button
               type="button"
-              onClick={() => setDoctorShared(true)}
-              className="w-full py-2.5 rounded-xl bg-[#002D4A] hover:bg-[#00385D] text-white font-medium text-xs mt-2 cursor-pointer transition-colors"
+              onClick={() => setMessageSent(true)}
+              className="w-full py-2.5 rounded-xl bg-[#002D4A] hover:bg-[#00385D] text-white font-medium text-xs mt-1 cursor-pointer transition-colors"
             >
-              Send Report to Doctor
+              Send Message
             </button>
           </div>
         )}
       </Modal>
 
-      {/* Modal: I don't need help right now */}
+      {/* In-App Modal: Download Full Report */}
       <Modal
-        isOpen={noHelpModal}
-        onClose={() => setNoHelpModal(false)}
-        title="Care Pathway Saved"
-        subtitle="Access anytime from your Optum Health vault"
+        isOpen={reportModal}
+        onClose={() => setReportModal(false)}
+        title="Preventive Diagnostic Report"
+        subtitle="HealthFirst Diagnostics · Document #HF-2026-928"
       >
-        <div className="space-y-3 text-xs text-slate-600">
-          <p>
-            No problem! Your laboratory diagnostic report remains safely archived in your health vault. We will send an annual reminder for your next routine checkup in September 2027.
-          </p>
+        <div className="space-y-3 text-xs text-slate-700">
+          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 font-mono text-[11px]">
+            <div className="flex justify-between border-b pb-1 font-bold">
+              <span>PARAMETER</span>
+              <span>RESULT</span>
+              <span>NORMAL RANGE</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Blood Pressure</span>
+              <span className="text-emerald-700 font-bold">118/76</span>
+              <span>&lt; 120/80</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Total Cholesterol</span>
+              <span className="text-amber-700 font-bold">214 mg/dL</span>
+              <span>&lt; 200 mg/dL</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Fasting Glucose</span>
+              <span className="text-emerald-700 font-bold">92 mg/dL</span>
+              <span>70-99 mg/dL</span>
+            </div>
+          </div>
           <button
             type="button"
-            onClick={() => setNoHelpModal(false)}
-            className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs mt-2 cursor-pointer transition-colors"
+            onClick={() => setReportModal(false)}
+            className="w-full py-2.5 rounded-xl bg-[#1B64F2] text-white font-semibold text-xs mt-2 cursor-pointer"
           >
-            Back to Health Home
+            Save PDF to Device
           </button>
         </div>
       </Modal>

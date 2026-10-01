@@ -1,18 +1,21 @@
 import React from 'react';
 import { User, Calendar, Heart } from 'lucide-react';
 import { HeaderBar } from '../components/common/HeaderBar';
-import { CoverageBadge } from '../components/common/CoverageBadge';
 import { RecommendationGraphic } from '../components/common/VectorIllustration';
 import { ScreeningInfo } from '../types';
 
 interface Screen1Props {
   screening: ScreeningInfo;
   onNavigateNext: () => void;
+  onNotNow?: () => void;
+  onInsufficientInfo?: () => void;
 }
 
 export const Screen1_Recommendation: React.FC<Screen1Props> = ({
   screening,
   onNavigateNext,
+  onNotNow,
+  onInsufficientInfo,
 }) => {
   return (
     <div className="flex flex-col min-h-full pb-8">
@@ -21,100 +24,112 @@ export const Screen1_Recommendation: React.FC<Screen1Props> = ({
         subtitle="Preventive care"
       />
 
-      <div className="p-4 sm:p-5 space-y-5">
+      <div className="p-4 sm:p-5 space-y-4">
         {/* Main Recommendation Card */}
-        <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-4">
-          <div className="space-y-1.5">
-            <span className="text-xs font-medium text-slate-500 block">
+        <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-3.5">
+          <div className="space-y-1">
+            <span className="text-xs font-normal text-slate-500 block">
               Preventive care
             </span>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 leading-tight">
               {screening.title}
             </h2>
           </div>
 
-          <div>
-            <CoverageBadge status="recommended" />
+          <RecommendationGraphic />
+
+          <div className="pt-1">
+            <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
+              Recommended
+            </span>
           </div>
 
-          <p className="text-sm text-slate-600 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
             {screening.recommendationReason}
           </p>
-
-          <RecommendationGraphic />
         </div>
 
-        {/* Why this may be relevant section */}
-        <div className="space-y-3 pt-1">
-          <h3 className="text-base font-semibold text-slate-900 px-1">
-            Why this may be relevant
+        {/* Why it may be relevant card */}
+        <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-3.5">
+          <h3 className="text-base font-bold text-slate-900">
+            Why it may be relevant
           </h3>
 
-          {/* Profile Card */}
-          <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-              <User className="w-5 h-5 stroke-[2]" />
+          {/* Item 1: Age and risk profile */}
+          <div className="bg-[#F8FAFC] rounded-2xl p-4 flex items-start gap-3.5">
+            <div className="w-9 h-9 rounded-full bg-blue-50 text-[#1B64F2] flex items-center justify-center shrink-0 mt-0.5">
+              <User className="w-4 h-4 stroke-[2.2]" />
             </div>
-            <div>
-              <span className="text-xs text-slate-400 font-medium block">
-                Your profile
+            <div className="space-y-0.5">
+              <span className="text-[11px] text-slate-400 font-normal block">
+                Age and risk profile
               </span>
-              <p className="text-sm font-semibold text-slate-800 mt-0.5">
-                Your age and available health information
+              <p className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">
+                Your available health information
               </p>
             </div>
           </div>
 
-          {/* Screening History Card */}
-          <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-              <Calendar className="w-5 h-5 stroke-[2]" />
+          {/* Item 2: Screening guidelines */}
+          <div className="bg-[#F8FAFC] rounded-2xl p-4 flex items-start gap-3.5">
+            <div className="w-9 h-9 rounded-full bg-blue-50 text-[#1B64F2] flex items-center justify-center shrink-0 mt-0.5">
+              <Calendar className="w-4 h-4 stroke-[2.2]" />
             </div>
-            <div>
-              <span className="text-xs text-slate-400 font-medium block">
-                Screening history
+            <div className="space-y-0.5">
+              <span className="text-[11px] text-slate-400 font-normal block">
+                Screening guidelines
               </span>
-              <p className="text-sm font-semibold text-slate-800 mt-0.5">
-                No recent screening recorded in this experience
+              <p className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">
+                No recent screening recorded here
               </p>
             </div>
           </div>
 
-          {/* Care Guidance Card */}
-          <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-              <Heart className="w-5 h-5 stroke-[2]" />
+          {/* Item 3: Prevention timing */}
+          <div className="bg-[#F8FAFC] rounded-2xl p-4 flex items-start gap-3.5">
+            <div className="w-9 h-9 rounded-full bg-blue-50 text-[#1B64F2] flex items-center justify-center shrink-0 mt-0.5">
+              <Heart className="w-4 h-4 stroke-[2.2]" />
             </div>
-            <div>
-              <span className="text-xs text-slate-400 font-medium block">
-                Care guidance
+            <div className="space-y-0.5">
+              <span className="text-[11px] text-slate-400 font-normal block">
+                Prevention timing
               </span>
-              <p className="text-sm font-semibold text-slate-800 mt-0.5">
+              <p className="text-xs sm:text-sm font-semibold text-slate-900 leading-snug">
                 Preventive care guidance may recommend screening before symptoms appear
               </p>
             </div>
           </div>
         </div>
 
-        {/* Provenance Context Card */}
-        <div className="bg-slate-50/90 rounded-2xl p-4 border border-slate-200/80 space-y-2">
-          <p className="text-xs text-slate-500">
-            Illustrative profile information shown for this concept.
-          </p>
-          <div className="bg-emerald-50/80 rounded-xl p-3 border border-emerald-200 text-xs text-emerald-800 font-medium leading-relaxed">
-            Recommendation based on: Available health information + preventive care guidance
-          </div>
-        </div>
-
-        {/* Primary CTA */}
-        <div className="pt-2">
+        {/* Buttons */}
+        <div className="space-y-2.5 pt-2">
           <button
             type="button"
             onClick={onNavigateNext}
-            className="w-full h-13 rounded-2xl bg-[#1B64F2] hover:bg-[#1554D1] active:scale-[0.98] text-white font-semibold text-base shadow-sm shadow-blue-500/20 transition-all flex items-center justify-center cursor-pointer"
+            className="w-full py-3.5 rounded-2xl bg-[#1B64F2] hover:bg-[#1554D1] active:scale-[0.99] text-white font-semibold text-sm shadow-xs transition-all cursor-pointer text-center"
           >
-            Understand why
+            Understand Why
           </button>
+
+          <button
+            type="button"
+            onClick={onNotNow}
+            className="w-full py-3.5 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 font-semibold text-sm active:scale-[0.99] transition-all cursor-pointer text-center"
+          >
+            Not now
+          </button>
+
+          {onInsufficientInfo && (
+            <div className="text-center pt-1">
+              <button
+                type="button"
+                onClick={onInsufficientInfo}
+                className="text-[11px] text-slate-500 hover:text-slate-800 underline transition-colors cursor-pointer"
+              >
+                Missing health history? Check information requirements →
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

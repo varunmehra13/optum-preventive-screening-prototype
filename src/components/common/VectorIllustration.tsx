@@ -3,35 +3,42 @@ import React from 'react';
 export const RecommendationGraphic: React.FC<{ className?: string }> = ({ className = '' }) => {
   return (
     <div
-      className={`relative w-full h-32 bg-gradient-to-br from-blue-50/70 via-sky-50/40 to-slate-50/80 rounded-2xl p-3 border border-blue-100/60 overflow-hidden flex items-center justify-center ${className}`}
+      className={`relative w-full h-32 bg-[#F8FAFD] rounded-2xl p-3 border border-slate-200/90 overflow-hidden flex items-center justify-between ${className}`}
     >
-      {/* Background soft ambient blur shapes */}
-      <div className="absolute -top-6 -right-6 w-28 h-28 bg-blue-200/30 rounded-full blur-xl pointer-events-none" />
-      <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-emerald-200/25 rounded-full blur-lg pointer-events-none" />
+      {/* Concentric gauge arcs in top right */}
+      <div className="absolute -top-3 -right-3 w-16 h-16 rounded-full border-4 border-[#3B82F6]/30 pointer-events-none" />
+      <div className="absolute -top-1 -right-1 w-12 h-12 rounded-full border-4 border-[#F97316]/40 pointer-events-none" />
 
-      {/* Illustrated miniature interface mockup from Figma */}
-      <div className="relative w-full max-w-[280px] bg-white rounded-xl shadow-xs border border-slate-200/80 p-2.5 flex gap-3">
-        {/* Left side grid of pill cards */}
-        <div className="grid grid-cols-3 gap-1.5 flex-1">
-          <div className="h-6 rounded-md bg-emerald-50 border border-emerald-100" />
-          <div className="h-6 rounded-md bg-blue-50 border border-blue-100" />
-          <div className="h-6 rounded-md bg-emerald-50 border border-emerald-100" />
-          <div className="h-6 rounded-md bg-blue-100/70 border border-blue-200/60" />
-          <div className="h-6 rounded-md bg-emerald-50 border border-emerald-100" />
-          <div className="h-6 rounded-md bg-blue-50 border border-blue-100" />
+      {/* Main vector interface */}
+      <div className="relative w-full flex items-center justify-between gap-3 px-1">
+        {/* Left side 2x3 rounded pills/cards */}
+        <div className="grid grid-cols-3 gap-1.5 flex-1 max-w-[150px]">
+          <div className="h-8 rounded-xl bg-[#EBF3FF] border border-[#BFDBFE]/80" />
+          <div className="h-8 rounded-xl bg-[#EBF3FF] border border-[#BFDBFE]/80" />
+          <div className="h-8 rounded-xl bg-[#EBF3FF] border border-[#BFDBFE]/80" />
+          <div className="h-8 rounded-xl bg-[#EBF3FF] border border-[#BFDBFE]/80" />
+          <div className="h-8 rounded-xl bg-[#EBF3FF] border border-[#BFDBFE]/80" />
+          <div className="h-8 rounded-xl bg-[#EBF3FF] border border-[#BFDBFE]/80" />
         </div>
 
-        {/* Right side mini card with slider/dots */}
-        <div className="w-28 bg-slate-50 rounded-lg p-2 border border-slate-200/60 flex flex-col justify-between">
-          <div className="w-full h-1 bg-blue-600 rounded-full" />
-          <div className="relative w-full h-4 bg-slate-200/60 rounded-full my-1 flex items-center">
-            <div className="absolute right-3 w-3 h-3 bg-blue-500 rounded-full shadow-xs" />
+        {/* Right side slider & axis */}
+        <div className="flex-1 max-w-[150px] flex flex-col justify-between h-20 py-1">
+          {/* Top blue bar */}
+          <div className="w-full h-1.5 bg-[#1B64F2] rounded-full" />
+
+          {/* Slider track with handle */}
+          <div className="relative w-full h-5 flex items-center">
+            <div className="w-full h-0.5 bg-[#DBEAFE]" />
+            <div className="absolute right-4 w-5 h-5 rounded-full bg-[#1B64F2] ring-4 ring-[#BFDBFE]/60 shadow-xs" />
           </div>
-          {/* Status dots */}
-          <div className="flex items-center justify-between pt-1">
-            <span className="w-2 h-2 rounded-full bg-blue-500" />
-            <span className="w-2 h-2 rounded-full bg-emerald-600" />
-            <span className="w-2 h-2 rounded-full bg-amber-500" />
+
+          {/* Axis line with blue progress dots */}
+          <div className="relative w-full flex items-center justify-between px-1">
+            <div className="absolute inset-x-0 h-0.5 bg-[#E2E8F0]" />
+            <span className="relative z-10 w-2 h-2 rounded-full bg-[#1B64F2]" />
+            <span className="relative z-10 w-2 h-2 rounded-full bg-[#3B82F6]" />
+            <span className="relative z-10 w-1.5 h-1.5 rounded-full bg-[#93C5FD]" />
+            <span className="relative z-10 w-2 h-2 rounded-full bg-[#1B64F2]" />
           </div>
         </div>
       </div>

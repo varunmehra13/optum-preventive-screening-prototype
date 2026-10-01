@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Shield, CalendarCheck, Share2, ArrowRight } from 'lucide-react';
+import { Calendar, Shield, ArrowRight, Share2, Sparkles } from 'lucide-react';
 import { HeaderBar } from '../components/common/HeaderBar';
 import { ConfirmedCalendarGraphic } from '../components/common/VectorIllustration';
 import { Modal } from '../components/common/Modal';
@@ -10,6 +10,7 @@ interface Screen9Props {
   onBack: () => void;
   onViewCostDetails: () => void;
   onViewResultsDemo: () => void;
+  onViewResultsNotReady?: () => void;
 }
 
 export const Screen9_AppointmentConfirmed: React.FC<Screen9Props> = ({
@@ -17,9 +18,8 @@ export const Screen9_AppointmentConfirmed: React.FC<Screen9Props> = ({
   onBack,
   onViewCostDetails,
   onViewResultsDemo,
+  onViewResultsNotReady,
 }) => {
-  const [calendarSaved, setCalendarSaved] = useState(false);
-  const [prepModalOpen, setPrepModalOpen] = useState(false);
   const [passModalOpen, setPassModalOpen] = useState(false);
   const [copiedPass, setCopiedPass] = useState(false);
 
@@ -40,33 +40,9 @@ export const Screen9_AppointmentConfirmed: React.FC<Screen9Props> = ({
             Appointment confirmed
           </h2>
 
-          <p className="text-xs text-slate-500 max-w-xs">
+          <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
             Your preventive health screening has been scheduled.
           </p>
-
-          <div className="pt-2 flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setCalendarSaved(true)}
-              className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-                calendarSaved
-                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-300'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-              }`}
-            >
-              <CalendarCheck className="w-3.5 h-3.5" />
-              <span>{calendarSaved ? 'Added to Calendar ✓' : 'Add to Calendar'}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setPassModalOpen(true)}
-              className="px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 flex items-center gap-1.5 transition-all cursor-pointer"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>Share Pass</span>
-            </button>
-          </div>
         </div>
 
         {/* Appointment details Card */}
@@ -75,109 +51,84 @@ export const Screen9_AppointmentConfirmed: React.FC<Screen9Props> = ({
             Appointment details
           </span>
 
-          <div className="flex items-start gap-3.5">
-            <div className="w-12 h-12 rounded-full bg-blue-50 text-[#1B64F2] flex items-center justify-center shrink-0">
-              <Calendar className="w-6 h-6 stroke-[2]" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="text-xl font-bold tracking-tight text-slate-900 leading-snug">
-                {appointment.selectedDate}
-              </h3>
-              <div className="text-base font-semibold text-[#1B64F2]">
-                {appointment.selectedTime}
+          <div className="space-y-3">
+            <h3 className="text-xl font-bold tracking-tight text-slate-900 leading-snug">
+              {appointment.selectedDate}
+            </h3>
+
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-blue-50 text-[#1B64F2] flex items-center justify-center shrink-0">
+                <Calendar className="w-4 h-4 stroke-[2.2]" />
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                {appointment.provider.name} · Central Delhi · {appointment.provider.distance}
-              </p>
+              <span className="text-base font-bold text-[#1B64F2]">
+                {appointment.selectedTime}
+              </span>
+            </div>
+
+            <p className="text-xs text-slate-500 leading-relaxed">
+              {appointment.provider.name} · Central Delhi · {appointment.provider.distance}
+            </p>
+
+            <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs text-slate-600">
+              <Shield className="w-4 h-4 text-slate-400" />
+              <span>{appointment.screeningName}</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs text-slate-700">
-            <Shield className="w-4 h-4 text-slate-400" />
-            <span className="font-medium">{appointment.screeningName}</span>
-          </div>
-
-          {/* Expected amount you pay box */}
-          <div className="bg-[#EDF4FF] rounded-2xl p-4 border border-[#D5E5FD] space-y-1">
-            <span className="text-xs text-slate-600 font-normal">
+          {/* Expected amount you pay inner card */}
+          <div className="bg-[#F0F6FF] rounded-2xl p-4 space-y-1">
+            <span className="text-xs text-slate-600 font-medium block">
               Expected amount you pay
             </span>
-            <div className="text-3xl font-extrabold text-[#0F7645]">
+            <div className="text-3xl font-black text-[#1B64F2] tracking-tight">
               ₹0
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={onViewCostDetails}
-            className="text-xs font-semibold text-[#0F7645] hover:underline block cursor-pointer"
-          >
-            View cost details
-          </button>
+          <div>
+            <button
+              type="button"
+              onClick={onViewCostDetails}
+              className="text-xs font-semibold text-[#1B64F2] hover:underline cursor-pointer"
+            >
+              View cost details
+            </button>
+          </div>
         </div>
 
-        {/* Step 7 Simulator: Jump to Screening Results & Next Steps */}
-        <div className="bg-[#002D4A] rounded-3xl p-5 text-white shadow-sm space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold tracking-wider text-emerald-400 uppercase">
-              JOURNEY STEP 7 · TEST DAY SIMULATION
-            </span>
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          </div>
-          <h4 className="text-base font-bold text-white leading-tight">
-            Screening Completed &amp; Results Ready
-          </h4>
-          <p className="text-xs text-slate-300 leading-relaxed">
-            In a real journey, the user arrives at the lab, completes their screening, and receives an alert when their diagnostic findings are available.
-          </p>
-
+        {/* Journey progression action cards */}
+        <div className="pt-2 space-y-2.5">
           <button
             type="button"
             onClick={onViewResultsDemo}
-            className="w-full py-3.5 px-4 rounded-2xl bg-white text-[#002D4A] hover:bg-slate-100 active:scale-[0.98] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
+            className="w-full py-3.5 rounded-2xl bg-[#1B64F2] hover:bg-[#1554D1] active:scale-[0.99] text-white font-semibold text-sm shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer text-center"
           >
-            <span>View Screening Results &amp; Follow-up</span>
+            <span>Proceed to Screening Results</span>
             <ArrowRight className="w-4 h-4" />
           </button>
-        </div>
 
-        {/* Preparation requirements link */}
-        <div className="text-center pt-1">
-          <button
-            type="button"
-            onClick={() => setPrepModalOpen(true)}
-            className="text-xs font-semibold text-slate-600 hover:text-slate-900 underline cursor-pointer"
-          >
-            Review preparation requirements again
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setPassModalOpen(true)}
+              className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>View Pass</span>
+            </button>
+
+            {onViewResultsNotReady && (
+              <button
+                type="button"
+                onClick={onViewResultsNotReady}
+                className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <span>Edge Case: Processing</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Modal: Preparation Checklist */}
-      <Modal
-        isOpen={prepModalOpen}
-        onClose={() => setPrepModalOpen(false)}
-        title="Your Appointment Checklist"
-        subtitle="HealthFirst Diagnostics · 8:30 AM"
-      >
-        <div className="space-y-3 text-xs text-slate-700">
-          <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl">
-            <span className="font-bold text-blue-900">Pass Code: #{appointment.confirmationCode}</span>
-            <p className="text-blue-800 text-[11px] mt-0.5">Show this screen upon entry to skip queue.</p>
-          </div>
-          <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl">
-            <span className="font-bold text-amber-900">8–10 Hour Fasting</span>
-            <p className="text-amber-800 text-[11px] mt-0.5">Plain water is encouraged. No breakfast, tea, or milk before blood draw.</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setPrepModalOpen(false)}
-            className="w-full py-2.5 rounded-xl bg-[#002D4A] text-white font-medium text-xs mt-2"
-          >
-            Done
-          </button>
-        </div>
-      </Modal>
 
       {/* In-App Modal: Optum Digital Health Pass */}
       <Modal
@@ -187,7 +138,6 @@ export const Screen9_AppointmentConfirmed: React.FC<Screen9Props> = ({
         subtitle="Express zero-billing appointment voucher"
       >
         <div className="space-y-4 text-xs">
-          {/* Card Ticket styling */}
           <div className="bg-gradient-to-br from-[#002D4A] to-[#0A4770] text-white rounded-2xl p-4 shadow-md space-y-3">
             <div className="flex items-center justify-between border-b border-white/15 pb-2.5">
               <div className="flex items-center gap-1.5">
@@ -205,7 +155,7 @@ export const Screen9_AppointmentConfirmed: React.FC<Screen9Props> = ({
                 <span className="font-mono font-bold text-sm text-white tracking-wider">{appointment.confirmationCode}</span>
               </div>
               <div>
-                <span className="text-slate-300 block text-[10px]">Date & Time</span>
+                <span className="text-slate-300 block text-[10px]">Date &amp; Time</span>
                 <span className="font-bold text-white">{appointment.selectedDate} · {appointment.selectedTime}</span>
               </div>
               <div className="col-span-2 pt-1">
@@ -214,7 +164,6 @@ export const Screen9_AppointmentConfirmed: React.FC<Screen9Props> = ({
               </div>
             </div>
 
-            {/* Barcode representation */}
             <div className="pt-2 border-t border-white/10 flex flex-col items-center gap-1">
               <div className="h-9 w-full bg-white/95 rounded px-2 py-1 flex items-center justify-between">
                 {[4, 2, 6, 2, 3, 5, 2, 7, 3, 2, 5, 3, 2, 6, 4, 2, 4, 3, 5, 2, 3, 6, 2].map((w, i) => (
@@ -240,7 +189,7 @@ export const Screen9_AppointmentConfirmed: React.FC<Screen9Props> = ({
               }}
               className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs transition-colors text-center cursor-pointer"
             >
-              {copiedPass ? 'Copied to Clipboard! ✓' : 'Copy Voucher Code'}
+              {copiedPass ? 'Copied! ✓' : 'Copy Voucher Code'}
             </button>
             <button
               type="button"

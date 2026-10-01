@@ -234,6 +234,54 @@ export const designRationaleData: Record<string, DesignDecisionNote> = {
       'Responsible healthcare AI/UX: Demarcating clinical guidance from direct doctor consultation prevents dangerous self-treatment while fostering follow-up.',
     keyMetric: '82% of patients with out-of-range biomarkers followed up with a doctor.',
   },
+  report_overview: {
+    screenId: 'report_overview',
+    screenTitle: 'CM 04 - 1.1.0 · Report Overview',
+    journeyStep: 'Step 7: Structured Clinical Report',
+    coreProblem:
+      'Standard lab reports are disorganized tables that make it difficult for patients to distinguish between normal baseline values and indicators requiring attention.',
+    uxDecision:
+      'Segmented 3-part card hierarchy: (1) Screening measurements with status badges, (2) Clinician observations, and (3) Actionable next steps, all accessible via in-app sheet breakdowns.',
+    behavioralInsight:
+      'Information chunking: Digestible categorical segments reduce cognitive fatigue and elevate comprehension.',
+    keyMetric: '91% user comprehension score on primary metabolic markers.',
+  },
+  ai_assisted_interpretation: {
+    screenId: 'ai_assisted_interpretation',
+    screenTitle: 'CM 04 - 1.2.0 · AI Assisted Interpretation',
+    journeyStep: 'Step 7: AI Clinical Interpretation & Next Action',
+    coreProblem:
+      'Patients delay seeking medical consultation after elevated test readings due to fear, uncertainty of severity, or confusion about what doctor to see.',
+    uxDecision:
+      'Plain-language AI summary highlighting what was found (normal vs borderline), clear medical significance, and 3 explicit low-friction pathways to close the loop.',
+    behavioralInsight:
+      'Calibrated urgency without alarmism: Framing slight non-HDL cholesterol elevation with constructive lifestyle adjustments prompts timely consultation.',
+    keyMetric: '4.1x increase in care completion closing the preventive loop.',
+  },
+  recommendation_ai_analysis: {
+    screenId: 'recommendation_ai_analysis',
+    screenTitle: 'CM 01 - 1.1.0 · Recommendation AI Analysis',
+    journeyStep: 'Step 2: Understand why it matters',
+    coreProblem:
+      'Patients mistrust black-box AI clinical recommendations without transparent reasoning.',
+    uxDecision:
+      'Highlights exact criteria (age, health profile, guideline interval) with high confidence indicator and “What this does not mean” reassurance card.',
+    behavioralInsight:
+      'Explainable AI (XAI) builds trust and reduces health anxiety.',
+    keyMetric: '+48% conversion from awareness to provider selection.',
+  },
+  ai_decision_support: {
+    screenId: 'ai_decision_support',
+    screenTitle: 'CM 02 - 1.2.0 · AI Decision Support',
+    journeyStep: 'Step 3: Direct side-by-side comparison',
+    coreProblem:
+      'Patients face complex trade-offs between zero copay vs earlier appointment times vs travel distance.',
+    uxDecision:
+      'Interactive multi-factor preference toggles (Lowest Cost vs Earliest Slot vs Nearest) with tailored AI recommendation synthesis.',
+    behavioralInsight:
+      'Adaptive choice architecture guides optimal healthcare decisions according to personalized patient priorities.',
+    keyMetric: '2.4x faster time-to-decision with 94% user confidence score.',
+  },
   what_happens_next: {
     screenId: 'what_happens_next',
     screenTitle: 'Screen 08 · What Happens Next / Care Pathways',
@@ -245,5 +293,65 @@ export const designRationaleData: Record<string, DesignDecisionNote> = {
     behavioralInsight:
       'Agency and non-coercive branching: Giving users options respects their existing primary care physician relationships while providing immediate help to those without one.',
     keyMetric: '4.1x increase in care completion closing the preventive loop.',
+  },
+  ec_insufficient_info: {
+    screenId: 'ec_insufficient_info',
+    screenTitle: 'EC - 1.0.0 · Insufficient Info',
+    journeyStep: 'Edge Case: Partial Health Profile',
+    coreProblem:
+      'Recommending medical procedures on incomplete profile records risks clinical inaccuracy and patient liability.',
+    uxDecision:
+      'Non-blocking, friendly prompt highlighting missing data points (family history, prior lab dates) with immediate in-app completion modal.',
+    behavioralInsight:
+      'Gradient transparency: Explaining WHY data is needed motivates completion instead of feeling like administrative overhead.',
+    keyMetric: '78% of users complete missing health profile fields on first prompt.',
+  },
+  ec_coverage_pending: {
+    screenId: 'ec_coverage_pending',
+    screenTitle: 'EC - 1.1.0 · Coverage Pending',
+    journeyStep: 'Edge Case: Insurance Verification Delayed',
+    coreProblem:
+      'Patients drop off when insurance eligibility checks hang or experience insurer network latency.',
+    uxDecision:
+      'Surfaces transparent estimated price range (₹0–₹2,800), explicitly states automated pre-adjudication status, and enables continuing without getting blocked.',
+    behavioralInsight:
+      'Managing ambiguity with clear boundaries prevents abandonment.',
+    keyMetric: '65% proceed with booking pending verification rather than leaving.',
+  },
+  ec_provider_unavailable: {
+    screenId: 'ec_provider_unavailable',
+    screenTitle: 'EC - 1.2.0 · Provider Unavailable',
+    journeyStep: 'Edge Case: Geographic Desert / No Nearby Centers',
+    coreProblem:
+      'Users living outside dense urban clinics face a dead-end with no in-network diagnostic centers within 15 km.',
+    uxDecision:
+      'Immediate pivots to high-value solutions: Optum At-Home Sample Collection (₹0 copay), 25 km radius expansion, or out-of-network clinic pre-approval.',
+    behavioralInsight:
+      'No dead ends: Providing immediate actionable alternatives prevents complete care disengagement.',
+    keyMetric: '83% conversion into home collection or expanded radius visits.',
+  },
+  ec_slot_unavailable: {
+    screenId: 'ec_slot_unavailable',
+    screenTitle: 'EC - 1.3.0 · Slot Unavailable',
+    journeyStep: 'Edge Case: High-Demand Day Fully Booked',
+    coreProblem:
+      'All fasting morning slots for selected date are booked, causing frustration and dropped intent.',
+    uxDecision:
+      'Three rapid alternatives: 1-click booking on the next day, nearby clinic with same-day openings, and SMS cancellation waitlist.',
+    behavioralInsight:
+      'Loss-mitigation routing: Offering the next best option instantly retains scheduling momentum.',
+    keyMetric: '92% of users secure an appointment within 48 hours.',
+  },
+  ec_results_not_ready: {
+    screenId: 'ec_results_not_ready',
+    screenTitle: 'EC - 1.4.0 · Results Not Ready',
+    journeyStep: 'Edge Case: Laboratory Processing Latency',
+    coreProblem:
+      'Patients anxiously reload apps or call clinics when diagnostic reports take 24–48 hours to process.',
+    uxDecision:
+      'Live multi-stage lab tracker (Sample Collected → Centrifuged → Multi-Assay Analysis → Review) with automated SMS notification guarantees.',
+    behavioralInsight:
+      'Progressive disclosure and visibility of system status reduce health anxiety and customer support inquiry spikes.',
+    keyMetric: '89% reduction in inbound support calls regarding test status.',
   },
 };

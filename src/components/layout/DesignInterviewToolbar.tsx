@@ -36,18 +36,26 @@ const JOURNEY_STEPS: {
   { num: 7, label: 'Results & Next', screenId: 'results_ready' },
 ];
 
-const ALL_SCREENS: { id: ScreenId; title: string; category: string }[] = [
-  { id: 'recommendation_card', title: '01 · Recommendation Card', category: 'Awareness' },
-  { id: 'why_recommended', title: '02 · Why This Is Recommended', category: 'Education' },
-  { id: 'about_recommendation', title: '03 · About This Recommendation', category: 'Transparency' },
-  { id: 'provider_options', title: '04 · Screening Options (List)', category: 'Comparison' },
-  { id: 'compare_options', title: '05 · Compare Options (Side-by-Side)', category: 'Comparison' },
-  { id: 'cost_coverage', title: '06 · Cost & Coverage Breakdown', category: 'Financial Trust' },
-  { id: 'choose_appointment', title: '07 · Choose Appointment Slot', category: 'Scheduling' },
-  { id: 'review_appointment', title: '08 · Review Appointment', category: 'Verification' },
-  { id: 'appointment_confirmed', title: '09 · Appointment Confirmed', category: 'Success & Priming' },
-  { id: 'results_ready', title: '10 · Screening Results Summary', category: 'Clinical Delivery' },
-  { id: 'what_happens_next', title: '11 · What Happens Next / Pathways', category: 'Care Completion' },
+const ALL_SCREENS: { id: ScreenId; title: string; category: string; isEdgeCase?: boolean }[] = [
+  // 11 Core Updated Screens
+  { id: 'recommendation_card', title: 'CM 01 · 1.0.0 [Recommendation Card]', category: 'Awareness' },
+  { id: 'recommendation_ai_analysis', title: 'CM 01 · 1.1.0 [Recommendation AI Analysis]', category: 'Education' },
+  { id: 'provider_options', title: 'CM 02 · 1.0.0 [Provider Options]', category: 'Comparison' },
+  { id: 'cost_coverage', title: 'CM 02 · 1.1.0 [Cost & Coverage Detail]', category: 'Financial Trust' },
+  { id: 'ai_decision_support', title: 'CM 02 · 1.2.0 [AI Decision Support]', category: 'Decision Guidance' },
+  { id: 'choose_appointment', title: 'CM 03 · 1.0.0 [Choose Appointment]', category: 'Scheduling' },
+  { id: 'review_appointment', title: 'CM 03 · 1.1.0 [Review Appointment]', category: 'Pre-flight Verification' },
+  { id: 'appointment_confirmed', title: 'CM 03 · 1.2.0 [Appointment Confirmed]', category: 'Success & Pass' },
+  { id: 'results_ready', title: 'CM 04 · 1.0.0 [Results Ready]', category: 'Results Delivery' },
+  { id: 'report_overview', title: 'CM 04 · 1.1.0 [Report Overview]', category: 'Diagnostic Data' },
+  { id: 'ai_assisted_interpretation', title: 'CM 04 · 1.2.0 [AI Assisted Interpretation]', category: 'Clinical Loop Closure' },
+
+  // 5 Edge Cases
+  { id: 'ec_insufficient_info', title: 'EC · 1.0.0 [Insufficient Info]', category: 'Edge Case', isEdgeCase: true },
+  { id: 'ec_coverage_pending', title: 'EC · 1.1.0 [Coverage Pending]', category: 'Edge Case', isEdgeCase: true },
+  { id: 'ec_provider_unavailable', title: 'EC · 1.2.0 [Provider Unavailable]', category: 'Edge Case', isEdgeCase: true },
+  { id: 'ec_slot_unavailable', title: 'EC · 1.3.0 [Slot Unavailable]', category: 'Edge Case', isEdgeCase: true },
+  { id: 'ec_results_not_ready', title: 'EC · 1.4.0 [Results Not Ready]', category: 'Edge Case', isEdgeCase: true },
 ];
 
 export const DesignInterviewToolbar: React.FC<DesignInterviewToolbarProps> = ({
@@ -69,22 +77,31 @@ export const DesignInterviewToolbar: React.FC<DesignInterviewToolbarProps> = ({
   const currentStepNum = (() => {
     switch (currentScreen) {
       case 'recommendation_card':
+      case 'ec_insufficient_info':
         return 1;
       case 'why_recommended':
+      case 'recommendation_ai_analysis':
       case 'about_recommendation':
         return 2;
       case 'provider_options':
       case 'compare_options':
+      case 'ai_decision_support':
+      case 'ec_coverage_pending':
+      case 'ec_provider_unavailable':
         return 3;
       case 'cost_coverage':
         return 4;
       case 'choose_appointment':
-      case 'review_appointment':
+      case 'ec_slot_unavailable':
         return 5;
+      case 'review_appointment':
       case 'appointment_confirmed':
+      case 'ec_results_not_ready':
         return 6;
       case 'results_ready':
+      case 'report_overview':
       case 'result_summary':
+      case 'ai_assisted_interpretation':
       case 'what_happens_next':
         return 7;
       default:
@@ -172,16 +189,17 @@ export const DesignInterviewToolbar: React.FC<DesignInterviewToolbarProps> = ({
                 className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Layers className="w-3.5 h-3.5 text-blue-400" />
-                <span>All 11 Screens</span>
+                <span>All Screens (11 + 5)</span>
               </button>
 
               {screensDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95">
-                  <div className="text-[10px] uppercase font-bold text-slate-400 px-3 py-1.5 border-b border-slate-800">
-                    Figma Recreated Screens
-                  </div>
-                  <div className="max-h-80 overflow-y-auto space-y-1 py-1">
-                    {ALL_SCREENS.map((s) => (
+                <div className="absolute right-0 mt-2 w-80 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95">
+                  <div className="max-h-96 overflow-y-auto space-y-1 py-1">
+                    <div className="text-[10px] uppercase font-bold text-blue-400 px-3 py-1.5 border-b border-slate-800 flex items-center justify-between">
+                      <span>11 Updated Figma Screens</span>
+                      <span className="text-[9px] text-slate-400 font-normal">Core Flow</span>
+                    </div>
+                    {ALL_SCREENS.filter(s => !s.isEdgeCase).map((s) => (
                       <button
                         key={s.id}
                         type="button"
@@ -192,6 +210,29 @@ export const DesignInterviewToolbar: React.FC<DesignInterviewToolbarProps> = ({
                         className={`w-full text-left px-3 py-2 rounded-xl text-xs flex flex-col transition-colors cursor-pointer ${
                           currentScreen === s.id
                             ? 'bg-blue-600 text-white font-semibold'
+                            : 'text-slate-300 hover:bg-slate-800'
+                        }`}
+                      >
+                        <span className="truncate">{s.title}</span>
+                        <span className="text-[10px] opacity-75">{s.category}</span>
+                      </button>
+                    ))}
+
+                    <div className="text-[10px] uppercase font-bold text-amber-400 px-3 pt-3 pb-1 border-b border-slate-800 flex items-center justify-between mt-2">
+                      <span>5 Product Edge Cases</span>
+                      <span className="text-[9px] text-slate-400 font-normal">Real States</span>
+                    </div>
+                    {ALL_SCREENS.filter(s => s.isEdgeCase).map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => {
+                          onNavigateScreen(s.id);
+                          setScreensDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-3 py-2 rounded-xl text-xs flex flex-col transition-colors cursor-pointer ${
+                          currentScreen === s.id
+                            ? 'bg-amber-600 text-white font-semibold'
                             : 'text-slate-300 hover:bg-slate-800'
                         }`}
                       >

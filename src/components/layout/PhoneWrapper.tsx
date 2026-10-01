@@ -21,27 +21,13 @@ export const PhoneWrapper: React.FC<PhoneWrapperProps> = ({
         }`}
       >
         {/* Mobile Top Status Bar (Deep Navy #002D4A matching Figma screenshots) */}
-        <div className="bg-[#002D4A] text-white px-7 pt-3.5 pb-2 flex items-center justify-between select-none shrink-0 z-30">
-          <span className="text-xs font-bold tracking-tight">9:41</span>
-
-          {/* Dynamic Island / Hardware speaker slit */}
-          <div className="w-20 h-4 bg-black/40 rounded-full flex items-center justify-center">
-            <div className="w-2.5 h-2.5 rounded-full bg-slate-900 ring-1 ring-white/10 mr-2" />
-            <div className="w-1.5 h-1.5 rounded-full bg-blue-900" />
-          </div>
+        <div className="bg-[#002D4A] text-white px-7 pt-3.5 pb-2.5 flex items-center justify-between select-none shrink-0 z-30">
+          <span className="text-xs font-semibold tracking-tight text-white">9:41</span>
 
           <div className="flex items-center gap-1.5">
-            {/* Cellular signal bars */}
-            <div className="flex items-end gap-0.5 h-3">
-              <span className="w-0.5 h-1 bg-white rounded-xs" />
-              <span className="w-0.5 h-1.5 bg-white rounded-xs" />
-              <span className="w-0.5 h-2 bg-white rounded-xs" />
-              <span className="w-0.5 h-2.5 bg-white rounded-xs" />
-            </div>
-            {/* Wifi Icon */}
-            <Wifi className="w-3.5 h-3.5 stroke-[2.5]" />
-            {/* Battery Icon */}
-            <Battery className="w-4 h-4 stroke-[2.2]" />
+            <span className="w-4 h-1.5 bg-white rounded-full" />
+            <span className="w-4 h-1.5 bg-white rounded-full" />
+            <span className="w-5 h-1.5 bg-white rounded-full" />
           </div>
         </div>
 

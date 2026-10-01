@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar, Shield, CheckCircle2 } from 'lucide-react';
 import { HeaderBar } from '../components/common/HeaderBar';
-import { CoverageBadge } from '../components/common/CoverageBadge';
 import { Modal } from '../components/common/Modal';
 import { AppointmentState } from '../types';
 
@@ -32,11 +31,11 @@ export const Screen8_ReviewAppointment: React.FC<Screen8Props> = ({
       />
 
       <div className="p-4 sm:p-5 space-y-4">
-        {/* Appointment Date & Location Card */}
+        {/* Top Appointment Card */}
         <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-3.5">
           <div className="flex items-start gap-3.5">
-            <div className="w-12 h-12 rounded-full bg-blue-50 text-[#1B64F2] flex items-center justify-center shrink-0">
-              <Calendar className="w-6 h-6 stroke-[2]" />
+            <div className="w-11 h-11 rounded-full bg-blue-50 text-[#1B64F2] flex items-center justify-center shrink-0 mt-0.5">
+              <Calendar className="w-5 h-5 stroke-[2.2]" />
             </div>
             <div className="space-y-1">
               <h2 className="text-xl font-bold tracking-tight text-slate-900 leading-snug">
@@ -51,9 +50,9 @@ export const Screen8_ReviewAppointment: React.FC<Screen8Props> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs text-slate-700">
+          <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs text-slate-600">
             <Shield className="w-4 h-4 text-slate-400" />
-            <span className="font-medium">{appointment.screeningName}</span>
+            <span>{appointment.screeningName}</span>
           </div>
         </div>
 
@@ -65,94 +64,102 @@ export const Screen8_ReviewAppointment: React.FC<Screen8Props> = ({
 
           <div className="flex justify-between items-center text-xs sm:text-sm">
             <span className="text-slate-600">Provider price</span>
-            <span className="font-bold text-slate-900">
+            <span className="font-semibold text-slate-900">
               ₹{appointment.provider.providerPrice.toLocaleString()}
             </span>
           </div>
 
           <div className="flex justify-between items-center text-xs sm:text-sm">
             <span className="text-slate-600">Coverage status</span>
-            <CoverageBadge status={appointment.provider.coverageStatus} customLabel="Verified" size="sm" />
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              Verified
+            </span>
           </div>
 
-          {/* Expected amount you pay box */}
-          <div className="bg-[#EDF4FF] rounded-2xl p-4 border border-[#D5E5FD] space-y-1">
-            <span className="text-xs text-slate-600 font-normal">
+          {/* Expected amount you pay inner card */}
+          <div className="bg-[#F0F6FF] rounded-2xl p-4 space-y-1">
+            <span className="text-xs text-slate-600 font-medium block">
               Expected amount you pay
             </span>
-            <div className="text-3xl font-extrabold text-[#0F7645]">
+            <div className="text-3xl font-black text-[#1B64F2] tracking-tight">
               ₹0
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={onViewCostDetails}
-            className="text-xs font-semibold text-[#0F7645] hover:underline block pt-1 cursor-pointer"
-          >
-            View cost details
-          </button>
+          <div>
+            <button
+              type="button"
+              onClick={onViewCostDetails}
+              className="text-xs font-semibold text-[#1B64F2] hover:underline cursor-pointer"
+            >
+              View cost details
+            </button>
+          </div>
         </div>
 
         {/* Before your appointment Card */}
         <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-3">
-          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
             Before your appointment
-          </h3>
+          </span>
 
-          <ul className="space-y-2.5 text-xs text-slate-700">
-            <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#1B64F2] mt-1.5 shrink-0" />
+          <div className="space-y-2 text-xs text-slate-700">
+            <div className="flex items-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1B64F2] shrink-0 mt-1.5" />
               <span>
                 <strong>Preparation instructions:</strong> Review any requirements provided for this screening.
               </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#1B64F2] mt-1.5 shrink-0" />
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1B64F2] shrink-0 mt-1.5" />
               <span>
                 <strong>What to bring:</strong> Required identification or coverage information, if applicable.
               </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#1B64F2] mt-1.5 shrink-0" />
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1B64F2] shrink-0 mt-1.5" />
               <span>
                 <strong>Arrival:</strong> Follow the provider&apos;s appointment instructions.
               </span>
-            </li>
-          </ul>
+            </div>
+          </div>
 
-          <button
-            type="button"
-            onClick={() => setPrepModal(true)}
-            className="text-xs font-semibold text-[#0F7645] hover:underline block pt-1 cursor-pointer"
-          >
-            View preparation instructions
-          </button>
+          <div className="pt-1">
+            <button
+              type="button"
+              onClick={() => setPrepModal(true)}
+              className="text-xs font-semibold text-[#1B64F2] hover:underline cursor-pointer"
+            >
+              View preparation instructions
+            </button>
+          </div>
         </div>
 
         {/* Need to change plans? Card */}
-        <div className="bg-[#EDF4FF] rounded-3xl p-5 border border-[#D5E5FD] space-y-2">
+        <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-2.5">
           <h4 className="text-sm font-bold text-slate-900">
             Need to change plans?
           </h4>
           <p className="text-xs text-slate-600 leading-relaxed">
             Rescheduling or cancellation options are available based on the provider&apos;s policy.
           </p>
-          <button
-            type="button"
-            onClick={() => setPolicyModal(true)}
-            className="text-xs font-semibold text-[#0F7645] hover:underline block pt-0.5 cursor-pointer"
-          >
-            View change policy
-          </button>
+          <div>
+            <button
+              type="button"
+              onClick={() => setPolicyModal(true)}
+              className="text-xs font-semibold text-[#1B64F2] hover:underline cursor-pointer"
+            >
+              View change policy
+            </button>
+          </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="space-y-2.5 pt-2">
+        {/* Buttons */}
+        <div className="space-y-2 pt-2">
           <button
             type="button"
             onClick={onConfirm}
-            className="w-full h-13 rounded-2xl bg-[#002D4A] hover:bg-[#042338] active:scale-[0.98] text-white font-semibold text-base shadow-sm transition-all flex items-center justify-center cursor-pointer"
+            className="w-full py-3.5 rounded-2xl bg-[#1B64F2] hover:bg-[#1554D1] active:scale-[0.99] text-white font-semibold text-sm shadow-xs transition-all cursor-pointer text-center"
           >
             Confirm appointment
           </button>
@@ -160,7 +167,7 @@ export const Screen8_ReviewAppointment: React.FC<Screen8Props> = ({
           <button
             type="button"
             onClick={onChangeAppointment}
-            className="w-full h-12 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 active:scale-[0.98] text-slate-700 font-semibold text-sm transition-all flex items-center justify-center cursor-pointer"
+            className="w-full text-center text-xs font-semibold text-[#1B64F2] hover:underline py-1 cursor-pointer"
           >
             Change appointment
           </button>
@@ -190,7 +197,7 @@ export const Screen8_ReviewAppointment: React.FC<Screen8Props> = ({
           <button
             type="button"
             onClick={() => setPrepModal(false)}
-            className="w-full py-2.5 rounded-xl bg-[#002D4A] text-white font-medium text-xs mt-2"
+            className="w-full py-2.5 rounded-xl bg-[#002D4A] text-white font-medium text-xs mt-2 cursor-pointer"
           >
             Close
           </button>
@@ -213,16 +220,16 @@ export const Screen8_ReviewAppointment: React.FC<Screen8Props> = ({
               <CheckCircle2 className="w-4 h-4" />
               <span>No cancellation penalties</span>
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
-              Your preventive care benefit remains active and can be used with any other participating provider.
+            <p className="text-slate-500 mt-1">
+              Preventive care allowances remain fully valid and can be re-applied to any future date.
             </p>
           </div>
           <button
             type="button"
             onClick={() => setPolicyModal(false)}
-            className="w-full py-2.5 rounded-xl bg-[#1B64F2] text-white font-medium text-xs mt-2"
+            className="w-full py-2.5 rounded-xl bg-[#002D4A] text-white font-medium text-xs mt-2 cursor-pointer"
           >
-            I understand
+            Understood
           </button>
         </div>
       </Modal>
